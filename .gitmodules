@@ -1,0 +1,3 @@
+[submodule "generative_inpainting"]
+	path = generative_inpainting
+	url = git@github.com:d2207197/generative_inpainting.git
