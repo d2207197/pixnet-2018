@@ -31,16 +31,19 @@ if __name__ == "__main__":
         # modify to full path -> directory
         dir_item = args.folder_path + "/" + dir_item
         # print(dir_item)
+        training_file_names.append(dir_item)
 
-        training_folder = os.listdir(dir_item + "/training")
-        for training_item in training_folder:
-            training_item = dir_item + "/training" + "/" + training_item
-            training_file_names.append(training_item)
+        # training_folder = os.listdir(dir_item + "/training")
+        # for training_item in training_folder:
+        #     training_item = dir_item + "/training" + "/" + training_item
+        #     training_file_names.append(training_item)
 
-        validation_folder = os.listdir(dir_item + "/validation")
-        for validation_item in training_folder:
-            validation_item = dir_item + "/validation" + "/" + validation_item
-            validation_file_names.append(validation_item)
+        # validation_folder = os.listdir(dir_item + "/validation")
+        # for validation_item in training_folder:
+        #     validation_item = dir_item + "/validation" + "/" + validation_item
+        #     validation_file_names.append(validation_item)
+
+    validation_file_names = training_file_names[:20]
     # print all file paths
     for i in training_file_names:
         print(i)
@@ -71,5 +74,5 @@ if __name__ == "__main__":
     fo.close()
 
     # print process
-    print("Written file is: ", args.train_filename, ", is_shuffle: ", args.is_shuffled)
-
+    print("Written file is: ", args.train_filename,
+          ", is_shuffle: ", args.is_shuffled)
