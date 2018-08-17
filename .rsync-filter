@@ -3,3 +3,4 @@
 - model_logs/
 - neuralgym_logs/
 - *.swp
+- /model.list
