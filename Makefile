@@ -9,7 +9,7 @@ CAT_CROPED_PATH := $(CAT_PATH)/croped
 cat_images := $(wildcard $(CAT_IMAGES_PATH)/*)
 cat_croped := $(patsubst $(CAT_IMAGES_PATH)/%,$(CAT_CROPED_PATH)/%,$(cat_images))
 cat_masked := $(patsubst $(CAT_IMAGES_PATH)/%,$(CAT_MASKED_PATH)/%,$(cat_images))
-inpaint_yml := generative_inpainting/config/inpaint.$(CAT).yml
+inpaint_yml := config/inpaint.$(CAT).yml
 
 all: croped flist masked
 
@@ -32,12 +32,16 @@ flist: croped
 		--train_filename 'generative_inpainting/data/pixfood20/${CAT}/train.flist' \
 		--validation_filename 'generative_inpainting/data/pixfood20/${CAT}/valid.flist'
 
+.ONESHELL:
 inpaint-yml:
-	mkdir -p generative_inpainting/config
-	sed 's/<CAT>/$(CAT)/g' generative_inpainting/inpaint.yml.pixfood20.template > $(inpaint_yml)
+	cd generative_inpainting/
+	mkdir -p config
+	sed 's/<CAT>/$(CAT)/g' inpaint.yml.pixfood20.template > $(inpaint_yml)
 
+.ONESHELL:
 train:
-	python generative_inpainting/train.py $(inpaint_yml)
+	cd generative_inpainting/
+	python train.py $(inpaint_yml)
 
 debug:
 	$(info CATS="$(CATS)")
