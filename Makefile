@@ -10,9 +10,9 @@ cat_images := $(wildcard $(cat_images_path)/*)
 cat_croped := $(patsubst $(cat_images_path)/%,$(cat_croped_path)/%,$(cat_images))
 cat_masked := $(patsubst $(cat_images_path)/%,$(cat_masked_path)/%,$(cat_images))
 
-# in generative_inpainting/
 inpaint_yml := config/inpaint.$(CAT).yml
 image_mask := mask.jpg
+
 
 all: croped flist masked
 
@@ -37,14 +37,13 @@ flist: croped
 
 .ONESHELL:
 inpaint-yml:
-	cd generative_inpainting/
 	mkdir -p config
 	sed 's/<CAT>/$(CAT)/g' inpaint.yml.pixfood20.template > $(inpaint_yml)
 
 .ONESHELL:
 train: 
 	cd generative_inpainting/
-	python train.py $(inpaint_yml)
+	python train.py ../$(inpaint_yml)
 
 
 random_masked_image := $(shell shuf -e $(cat_masked) | head -1)
