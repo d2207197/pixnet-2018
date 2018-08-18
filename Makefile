@@ -25,8 +25,8 @@ $(cat_croped_path)/%: $(cat_images_path)/%
 	convert $<  -resize 256x256^ -gravity center -crop 256x256+0+0 $@
 
 $(cat_masked_path)/%: $(cat_croped_path)/%
-	@mkdir -p `dirname $@`
-	convert $< -fill White -draw 'rectangle 64,64 192,128' $@
+	mkdir -p `dirname '$@'`
+	convert '$<' -fill 'rgb(0,255,0)'  -draw 'rectangle 64,64 192,128' '$@'
 
 flist: croped
 	mkdir -p 'generative_inpainting/data/pixfood20/${CAT}'
