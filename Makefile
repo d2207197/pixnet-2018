@@ -1,4 +1,9 @@
-pixfood20_path := $(realpath dataset/pixfood20/images)
+ifeq ($(TEST),1)
+	pixfood20_path := $(realpath testset)
+else
+
+	pixfood20_path := $(realpath dataset/pixfood20/images)
+endif
 cats := $(wildcard $(pixfood20_path)/*)
 
 cat_path := $(pixfood20_path)/$(CAT)
@@ -6,8 +11,13 @@ cat_images_path := $(cat_path)/食物
 cat_masked_path := $(cat_path)/masked
 cat_croped_path := $(cat_path)/croped
 
-cat_images := $(wildcard $(cat_images_path)/*)
-cat_croped := $(patsubst $(cat_images_path)/%,$(cat_croped_path)/%,$(cat_images))
+ifeq ($(TEST),1)
+	cat_croped := $(wildcard $(cat_croped_path)/*)
+else
+	cat_images := $(wildcard $(cat_images_path)/*)
+	cat_croped := $(patsubst $(cat_images_path)/%,$(cat_croped_path)/%,$(cat_images))
+endif
+
 cat_masked := $(patsubst $(cat_images_path)/%,$(cat_masked_path)/%,$(cat_images))
 
 inpaint_yml := config/inpaint.$(CAT).yml
