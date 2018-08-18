@@ -18,7 +18,7 @@ else
 	cat_croped := $(patsubst $(cat_images_path)/%,$(cat_croped_path)/%,$(cat_images))
 endif
 
-cat_masked := $(patsubst $(cat_images_path)/%,$(cat_masked_path)/%,$(cat_images))
+cat_masked := $(patsubst $(cat_croped_path)/%,$(cat_masked_path)/%,$(cat_croped))
 
 TEST_PATH := downloads/$(CAT)
 TEST_MASKED_PATH := generative_inpainting/data/testset/$(CAT)/masked
