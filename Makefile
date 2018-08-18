@@ -1,9 +1,9 @@
-ifeq ($(TEST),1)
+ifdef TEST
 	pixfood20_path := $(realpath testset)
 else
-
 	pixfood20_path := $(realpath dataset/pixfood20/images)
 endif
+
 cats := $(wildcard $(pixfood20_path)/*)
 
 cat_path := $(pixfood20_path)/$(CAT)
@@ -11,7 +11,7 @@ cat_images_path := $(cat_path)/食物
 cat_masked_path := $(cat_path)/masked
 cat_croped_path := $(cat_path)/croped
 
-ifeq ($(TEST),1)
+ifdef TEST
 	cat_croped := $(wildcard $(cat_croped_path)/*)
 else
 	cat_images := $(wildcard $(cat_images_path)/*)
@@ -62,7 +62,7 @@ $(cat_croped_path)/%: $(cat_images_path)/%
 
 $(cat_masked_path)/%: $(cat_croped_path)/%
 	mkdir -p `dirname '$@'`
-	convert '$<' -fill 'rgb(0,255,0)'  -draw 'rectangle 64,64 192,128' '$@'
+	P='$@'; convert '$<' -fill 'rgb(0,255,0)'  -draw 'rectangle 64,64 192,128' $${P%.*}.png
 
 flist: croped
 	mkdir -p 'generative_inpainting/data/pixfood20/${CAT}'
@@ -82,7 +82,11 @@ train:
 	python train.py ../$(inpaint_yml)
 
 
-random_masked_image := $(shell shuf -e $(cat_masked) | head -1)
+ifdef POS:
+	random_masked_image := $(shell echo $(cat_masked) | xargs -n1 echo | tail -n +$(POS) | head -1 )
+else
+	random_masked_image := $(shell shuf -e $(cat_masked) | head -1)
+endif
 
 .ONESHELL:
 test: masked
