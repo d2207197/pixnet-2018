@@ -58,7 +58,7 @@ $(TEST_MASKED_PATH)/%: $(TEST_CROPED_PATH)/%
 
 $(cat_croped_path)/%: $(cat_images_path)/%
 	@mkdir -p `dirname $@`
-	convert $<  -resize 256x256^ -gravity center -crop 256x256+0+0 $@
+	convert '$<'  -resize 256x256^ -gravity center -crop 256x256+0+0 '$@'
 
 $(cat_masked_path)/%: $(cat_croped_path)/%
 	mkdir -p `dirname '$@'`
