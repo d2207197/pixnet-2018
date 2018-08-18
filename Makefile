@@ -1,19 +1,22 @@
-PIXFOOD20_PATH := dataset/pixfood20/images
-CATS := $(wildcard $(PIXFOOD20_PATH)/*)
+pixfood20_path := $(realpath dataset/pixfood20/images)
+cats := $(wildcard $(pixfood20_path)/*)
 
-CAT_PATH := $(PIXFOOD20_PATH)/$(CAT)
-CAT_IMAGES_PATH := $(CAT_PATH)/食物
-CAT_MASKED_PATH := $(CAT_PATH)/masked
-CAT_CROPED_PATH := $(CAT_PATH)/croped
+cat_path := $(pixfood20_path)/$(CAT)
+cat_images_path := $(cat_path)/食物
+cat_masked_path := $(cat_path)/masked
+cat_croped_path := $(cat_path)/croped
+
+cat_images := $(wildcard $(cat_images_path)/*)
+cat_croped := $(patsubst $(cat_images_path)/%,$(cat_croped_path)/%,$(cat_images))
+cat_masked := $(patsubst $(cat_images_path)/%,$(cat_masked_path)/%,$(cat_images))
 
 TEST_PATH := downloads/$(CAT)
 TEST_MASKED_PATH := generative_inpainting/data/testset/$(CAT)/masked
 TEST_CROPED_PATH := generative_inpainting/data/testset/$(CAT)/croped
 
-cat_images := $(wildcard $(CAT_IMAGES_PATH)/*)
-cat_croped := $(patsubst $(CAT_IMAGES_PATH)/%,$(CAT_CROPED_PATH)/%,$(cat_images))
-cat_masked := $(patsubst $(CAT_IMAGES_PATH)/%,$(CAT_MASKED_PATH)/%,$(cat_images))
 inpaint_yml := config/inpaint.$(CAT).yml
+image_mask := mask.jpg
+
 
 test_images := $(wildcard $(TEST_PATH)/*)
 test_croped := $(patsubst $(TEST_PATH)/%,$(TEST_CROPED_PATH)/%,$(test_images))
@@ -43,36 +46,55 @@ $(TEST_MASKED_PATH)/%: $(TEST_CROPED_PATH)/%
 	@mkdir -p `dirname $@`
 	convert '$<' -fill White -draw 'rectangle 64,64 192,128' '$@'
 
-$(CAT_CROPED_PATH)/%: $(CAT_IMAGES_PATH)/%
+$(cat_croped_path)/%: $(cat_images_path)/%
 	@mkdir -p `dirname $@`
 	convert $<  -resize 256x256^ -gravity center -crop 256x256+0+0 $@
 
-$(CAT_MASKED_PATH)/%: $(CAT_CROPED_PATH)/%
-	@mkdir -p `dirname $@`
-	convert $< -fill White -draw 'rectangle 64,64 192,128' $@
+$(cat_masked_path)/%: $(cat_croped_path)/%
+	mkdir -p `dirname '$@'`
+	convert '$<' -fill 'rgb(0,255,0)'  -draw 'rectangle 64,64 192,128' '$@'
 
 flist: croped
 	mkdir -p 'generative_inpainting/data/pixfood20/${CAT}'
 	python prepare_dataset.py \
-		--folder_path `readlink -f '$(CAT_CROPED_PATH)'` \
+		--folder_path `realpath '$(cat_croped_path)'` \
 		--train_filename 'generative_inpainting/data/pixfood20/${CAT}/train.flist' \
 		--validation_filename 'generative_inpainting/data/pixfood20/${CAT}/valid.flist'
 
 .ONESHELL:
 inpaint-yml:
-	cd generative_inpainting/
 	mkdir -p config
 	sed 's/<CAT>/$(CAT)/g' inpaint.yml.pixfood20.template > $(inpaint_yml)
 
 .ONESHELL:
-train:
+train: 
 	cd generative_inpainting/
-	python train.py $(inpaint_yml)
+	python train.py ../$(inpaint_yml)
+
+
+random_masked_image := $(shell shuf -e $(cat_masked) | head -1)
+
+.ONESHELL:
+test: masked
+	cd generative_inpainting/
+	../tools/imgcat $(random_masked_image)
+	python test.py --image $(random_masked_image) --mask $(image_mask)  --output out.jpg --checkpoint $(MODEL_LOG)
+	../tools/imgcat out.jpg
+
+
+.ONESHELL:
+image-mask:
+	cd generative_inpainting/
+	convert -size 256x256 xc:Black -fill White -draw 'rectangle 64,64 192,128' $(image_mask)
 
 debug:
-	$(info CATS="$(CATS)")
-	$(info CAT_IMAGES_PATH="$(CAT_IMAGES_PATH)")
+	$(info cats="$(cats)")
+	$(info cat_images_path="$(cat_images_path)")
 	$(info cat_images="$(cat_images)")
-	$(info cat_croped="$(cat_croped)")
+	$(info cat_croped="$(cat_croped)") @true
+
+
+debug-%:
+	$(info $* is a $(flavor $*) variable set to [$($*)]) @true
 
 
