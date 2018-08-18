@@ -4,3 +4,4 @@
 - neuralgym_logs/
 - *.swp
 - /model.list
+- /testset
