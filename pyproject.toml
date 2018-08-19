@@ -10,8 +10,11 @@ carriage = "^0.4.13"
 requests = "^2.19"
 attrs = "^18.1"
 jupyter = "^1.0"
-dramatiq = {version = "^1.3", extras = ["rabbitmq"]}
 opencv-python = "^3.4"
+scikit-image = "^0.14.0"
+dramatiq = {version = "^1.3", extras = ["rabbitmq", "redis", "watch"]}
+tensorflow = "^1.10"
+neuralgym = {git = "https://github.com/JiahuiYu/neuralgym"}
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.5"
