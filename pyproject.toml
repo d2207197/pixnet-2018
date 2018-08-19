@@ -7,6 +7,9 @@ authors = ["顏孜羲 <joseph.yen@gmail.com>"]
 [tool.poetry.dependencies]
 python = ">=3.6"
 carriage = "^0.4.13"
+requests = "^2.19"
+attrs = "^18.1"
+jupyter = "^1.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.5"
