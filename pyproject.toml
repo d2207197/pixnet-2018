@@ -10,6 +10,7 @@ carriage = "^0.4.13"
 requests = "^2.19"
 attrs = "^18.1"
 jupyter = "^1.0"
+dramatiq = {version = "^1.3", extras = ["rabbitmq"]}
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.5"
