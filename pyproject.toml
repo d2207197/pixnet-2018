@@ -6,8 +6,10 @@ authors = ["顏孜羲 <joseph.yen@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = ">=3.6"
+carriage = "^0.4.13"
+
+[tool.poetry.dev-dependencies]
 flake8 = "^3.5"
 autoflake = "^1.2"
 isort = "^4.3"
-
-[tool.poetry.dev-dependencies]
+autopep8 = "^1.3"
